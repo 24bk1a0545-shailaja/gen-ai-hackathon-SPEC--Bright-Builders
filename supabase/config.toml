@@ -1,0 +1,4 @@
+project_id = "rgkadgogeqrlscvbjtqd"
+
+[functions.room-design-ai]
+verify_jwt = false
