@@ -4,6 +4,8 @@ import { ArrowLeft, Sparkles, Home, Palette, Sofa, Lightbulb, Check, Loader2 } f
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { getThemeRecommendations } from "@/lib/design-ai";
+import { useI18n } from "@/lib/i18n";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const themes = [
   { id: "Budget Friendly Home", name: "Budget Friendly Home", desc: "Affordable yet stylish design for cost-conscious families", colors: ["#F5E6D3", "#C4A882", "#8B7355", "#E8D5B7"], budget: "₹50K - ₹1.5L", tags: ["Affordable", "Practical"], icon: "💰" },
@@ -15,6 +17,7 @@ const themes = [
 ];
 
 const ThemePacks = () => {
+  const { t } = useI18n();
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [aiResult, setAiResult] = useState<any>(null);
@@ -42,21 +45,24 @@ const ThemePacks = () => {
   return (
     <div className="min-h-screen bg-background">
       <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto flex items-center gap-4 py-4 px-6">
-          <Link to="/"><Button variant="ghost" size="icon"><ArrowLeft className="w-5 h-5" /></Button></Link>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-hero flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-primary-foreground" />
+        <div className="container mx-auto flex items-center justify-between py-4 px-6">
+          <div className="flex items-center gap-4">
+            <Link to="/"><Button variant="ghost" size="icon"><ArrowLeft className="w-5 h-5" /></Button></Link>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-hero flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <span className="font-display text-lg font-bold">{t("themes.title")}</span>
             </div>
-            <span className="font-display text-lg font-bold">AI Theme Packs</span>
           </div>
+          <LanguageSwitcher />
         </div>
       </nav>
 
       <div className="container mx-auto px-6 py-10 max-w-5xl">
         <div className="text-center mb-10">
-          <h1 className="font-display text-3xl font-bold text-foreground mb-2">One-Click AI Design Themes</h1>
-          <p className="text-muted-foreground">Choose a theme and AI will generate a complete design plan with colors, furniture, decor & budget</p>
+          <h1 className="font-display text-3xl font-bold text-foreground mb-2">{t("themes.heading")}</h1>
+          <p className="text-muted-foreground">{t("themes.desc")}</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -81,8 +87,8 @@ const ThemePacks = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex gap-1.5">
-                    {theme.tags.map(t => (
-                      <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">{t}</span>
+                    {theme.tags.map(tg => (
+                      <span key={tg} className="text-xs px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">{tg}</span>
                     ))}
                   </div>
                   <span className="text-xs font-medium text-primary">{theme.budget}</span>
@@ -92,16 +98,14 @@ const ThemePacks = () => {
           ))}
         </div>
 
-        {/* Apply Theme Button */}
         {selected && !aiResult && (
           <div className="mt-8 text-center">
             <Button onClick={applyTheme} disabled={loading} size="lg" className="bg-gradient-hero text-primary-foreground border-0 shadow-warm px-10">
-              {loading ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> AI is designing your {selected.name}...</> : <><Sparkles className="w-5 h-5 mr-2" /> Generate {selected.name} Design</>}
+              {loading ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> {t("themes.aiDesigning")} {selected.name}...</> : <><Sparkles className="w-5 h-5 mr-2" /> {t("themes.generate")} {selected.name}</>}
             </Button>
           </div>
         )}
 
-        {/* AI Generated Theme */}
         {aiResult && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-10 space-y-6">
             <div className="bg-card rounded-2xl p-8 border-2 border-primary shadow-warm">
@@ -113,14 +117,13 @@ const ThemePacks = () => {
                 </div>
               </div>
               {aiResult.designScore && (
-                <p className="text-sm text-primary font-semibold mt-2">Design Score: {aiResult.designScore}/100</p>
+                <p className="text-sm text-primary font-semibold mt-2">{t("hero.designScore")}: {aiResult.designScore}/100</p>
               )}
             </div>
 
-            {/* Color Palette */}
             {aiResult.colorPalette?.length > 0 && (
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h3 className="font-display text-lg font-semibold mb-4 text-foreground flex items-center gap-2"><Palette className="w-5 h-5 text-primary" /> Color Palette</h3>
+                <h3 className="font-display text-lg font-semibold mb-4 text-foreground flex items-center gap-2"><Palette className="w-5 h-5 text-primary" /> {t("themes.colorPalette")}</h3>
                 <div className="grid md:grid-cols-2 gap-3">
                   {aiResult.colorPalette.map((c: any, i: number) => (
                     <div key={i} className="flex items-center gap-3 bg-background rounded-lg p-3 border border-border">
@@ -135,10 +138,9 @@ const ThemePacks = () => {
               </div>
             )}
 
-            {/* Furniture */}
             {aiResult.furniture?.length > 0 && (
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h3 className="font-display text-lg font-semibold mb-4 text-foreground flex items-center gap-2"><Sofa className="w-5 h-5 text-primary" /> Furniture</h3>
+                <h3 className="font-display text-lg font-semibold mb-4 text-foreground flex items-center gap-2"><Sofa className="w-5 h-5 text-primary" /> {t("themes.furniture")}</h3>
                 <div className="space-y-3">
                   {aiResult.furniture.map((f: any, i: number) => (
                     <div key={i} className="bg-background rounded-lg p-4 border border-border">
@@ -156,10 +158,9 @@ const ThemePacks = () => {
               </div>
             )}
 
-            {/* Decor */}
             {aiResult.decor?.length > 0 && (
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h3 className="font-display text-lg font-semibold mb-4 text-foreground">🖼️ Decor Items</h3>
+                <h3 className="font-display text-lg font-semibold mb-4 text-foreground">{t("themes.decorItems")}</h3>
                 <div className="grid md:grid-cols-2 gap-3">
                   {aiResult.decor.map((d: any, i: number) => (
                     <div key={i} className="bg-background rounded-lg p-3 border border-border">
@@ -174,10 +175,9 @@ const ThemePacks = () => {
               </div>
             )}
 
-            {/* Lighting */}
             {aiResult.lighting?.length > 0 && (
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h3 className="font-display text-lg font-semibold mb-4 text-foreground flex items-center gap-2"><Lightbulb className="w-5 h-5 text-primary" /> Lighting</h3>
+                <h3 className="font-display text-lg font-semibold mb-4 text-foreground flex items-center gap-2"><Lightbulb className="w-5 h-5 text-primary" /> {t("themes.lighting")}</h3>
                 <div className="space-y-2">
                   {aiResult.lighting.map((l: any, i: number) => (
                     <div key={i} className="bg-background rounded-lg p-3 border border-border flex justify-between items-center">
@@ -191,11 +191,10 @@ const ThemePacks = () => {
               </div>
             )}
 
-            {/* Budget & Vastu */}
             <div className="grid md:grid-cols-2 gap-6">
               {aiResult.totalBudget && (
                 <div className="bg-card rounded-xl p-6 border-2 border-primary">
-                  <h3 className="font-display text-lg font-semibold mb-2 text-foreground">💰 Total Budget</h3>
+                  <h3 className="font-display text-lg font-semibold mb-2 text-foreground">{t("themes.totalBudget")}</h3>
                   <p className="text-2xl font-bold text-gradient-hero">{aiResult.totalBudget}</p>
                   {aiResult.flooring && (
                     <div className="mt-3 text-sm">
@@ -208,7 +207,7 @@ const ThemePacks = () => {
               )}
               {aiResult.vastuNotes?.length > 0 && (
                 <div className="bg-card rounded-xl p-6 border border-border">
-                  <h3 className="font-display text-lg font-semibold mb-3 text-foreground">🕉️ Vastu Notes</h3>
+                  <h3 className="font-display text-lg font-semibold mb-3 text-foreground">{t("themes.vastuNotes")}</h3>
                   <ul className="space-y-2">
                     {aiResult.vastuNotes.map((n: string, i: number) => (
                       <li key={i} className="text-sm text-muted-foreground flex items-start gap-2"><span className="text-accent">•</span>{n}</li>
@@ -219,9 +218,9 @@ const ThemePacks = () => {
             </div>
 
             <div className="flex gap-3 flex-wrap">
-              <Link to="/colors"><Button className="bg-gradient-hero text-primary-foreground border-0">Customize Colors →</Button></Link>
-              <Link to="/budget"><Button variant="outline" className="border-primary text-primary">Detailed Budget →</Button></Link>
-              <Button variant="outline" onClick={() => { setAiResult(null); setSelectedTheme(null); }} className="border-border text-foreground">Try Another Theme</Button>
+              <Link to="/colors"><Button className="bg-gradient-hero text-primary-foreground border-0">{t("themes.customizeColors")}</Button></Link>
+              <Link to="/budget"><Button variant="outline" className="border-primary text-primary">{t("themes.detailedBudget")}</Button></Link>
+              <Button variant="outline" onClick={() => { setAiResult(null); setSelectedTheme(null); }} className="border-border text-foreground">{t("themes.tryAnother")}</Button>
             </div>
           </motion.div>
         )}

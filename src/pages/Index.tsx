@@ -3,17 +3,21 @@ import { motion } from "framer-motion";
 import { Home, Paintbrush, Sofa, Lightbulb, Calculator, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImage from "@/assets/hero-room.jpg";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useI18n } from "@/lib/i18n";
 
-const features = [
-  { icon: Home, title: "AI Room Scanner", desc: "Upload a photo or enter dimensions to analyze your room instantly", link: "/scanner" },
-  { icon: Paintbrush, title: "Paint Simulator", desc: "Visualize colors on your walls with real-time simulation", link: "/colors" },
-  { icon: Sofa, title: "Smart Furniture", desc: "Optimal furniture placement with space optimization", link: "/designer" },
-  { icon: Lightbulb, title: "Lighting Designer", desc: "Smart lighting suggestions for every mood and room", link: "/designer" },
-  { icon: Calculator, title: "Budget Estimator", desc: "Get cost breakdowns and find budget-friendly alternatives", link: "/budget" },
-  { icon: Sparkles, title: "AI Theme Packs", desc: "One-click themes: Traditional Indian, Modern, Vastu-based", link: "/themes" },
-];
+const featureKeys = [
+  { icon: Home, titleKey: "features.aiRoomScanner", descKey: "features.aiRoomScannerDesc", link: "/scanner" },
+  { icon: Paintbrush, titleKey: "features.paintSimulator", descKey: "features.paintSimulatorDesc", link: "/colors" },
+  { icon: Sofa, titleKey: "features.smartFurniture", descKey: "features.smartFurnitureDesc", link: "/designer" },
+  { icon: Lightbulb, titleKey: "features.lightingDesigner", descKey: "features.lightingDesignerDesc", link: "/designer" },
+  { icon: Calculator, titleKey: "features.budgetEstimator", descKey: "features.budgetEstimatorDesc", link: "/budget" },
+  { icon: Sparkles, titleKey: "features.aiThemePacks", descKey: "features.aiThemePacksDesc", link: "/themes" },
+] as const;
 
 const Index = () => {
+  const { t, language } = useI18n();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navbar */}
@@ -26,14 +30,17 @@ const Index = () => {
             <span className="font-display text-xl font-bold text-foreground">GruhaBuddy</span>
           </Link>
           <div className="hidden md:flex items-center gap-8">
-            <Link to="/scanner" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Room Scanner</Link>
-            <Link to="/themes" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Themes</Link>
-            <Link to="/designer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Designer</Link>
-            <Link to="/budget" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Budget</Link>
+            <Link to="/scanner" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">{t("nav.roomScanner")}</Link>
+            <Link to="/themes" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">{t("nav.themes")}</Link>
+            <Link to="/designer" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">{t("nav.designer")}</Link>
+            <Link to="/budget" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">{t("nav.budget")}</Link>
           </div>
-          <Button className="bg-gradient-hero text-primary-foreground hover:opacity-90 transition-opacity border-0">
-            Get Started
-          </Button>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <Button className="bg-gradient-hero text-primary-foreground hover:opacity-90 transition-opacity border-0">
+              {t("nav.getStarted")}
+            </Button>
+          </div>
         </div>
       </nav>
 
@@ -47,32 +54,31 @@ const Index = () => {
               transition={{ duration: 0.7 }}
             >
               <span className="inline-block px-4 py-1.5 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-6">
-                🏠 AI-Powered Interior Design for Indian Homes
+                {t("hero.badge")}
               </span>
               <h1 className="font-display text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                Design Your <br />
-                <span className="text-gradient-hero">Dream Home</span>
-                <br />with AI
+                {t("hero.title1")} <br />
+                <span className="text-gradient-hero">{t("hero.titleHighlight")}</span>
+                <br />{t("hero.title2")}
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-lg">
-                Scan your room, pick themes, simulate colors, and get budget estimates — 
-                all optimized for Indian homes, small spaces, and Vastu compliance.
+                {t("hero.desc")}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/scanner">
                   <Button size="lg" className="bg-gradient-hero text-primary-foreground hover:opacity-90 transition-opacity border-0 shadow-warm text-base px-8">
-                    Scan Your Room
+                    {t("hero.scanRoom")}
                   </Button>
                 </Link>
                 <Link to="/themes">
                   <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground text-base px-8">
-                    Explore Themes
+                    {t("hero.exploreThemes")}
                   </Button>
                 </Link>
               </div>
               <div className="flex items-center gap-6 mt-10 text-sm text-muted-foreground">
                 <span>🇮🇳 English • हिन्दी • తెలుగు</span>
-                <span>🕉️ Vastu Support</span>
+                <span>{t("hero.vastuSupport")}</span>
               </div>
             </motion.div>
 
@@ -90,7 +96,7 @@ const Index = () => {
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -bottom-4 -left-4 bg-card rounded-xl p-4 shadow-gold border border-border"
               >
-                <p className="text-sm font-medium text-foreground">Design Score</p>
+                <p className="text-sm font-medium text-foreground">{t("hero.designScore")}</p>
                 <p className="text-2xl font-bold text-gradient-hero">92/100</p>
               </motion.div>
               <motion.div
@@ -98,7 +104,7 @@ const Index = () => {
                 transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -top-2 -right-2 bg-card rounded-xl p-4 shadow-gold border border-border"
               >
-                <p className="text-sm font-medium text-foreground">Est. Budget</p>
+                <p className="text-sm font-medium text-foreground">{t("hero.estBudget")}</p>
                 <p className="text-2xl font-bold text-sage">₹1.8L</p>
               </motion.div>
             </motion.div>
@@ -111,16 +117,16 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-14">
             <h2 className="font-display text-3xl lg:text-4xl font-bold mb-4 text-foreground">
-              Everything You Need to Design Your Home
+              {t("features.title")}
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              From room scanning to budget planning, GruhaBuddy handles it all with AI intelligence tailored for Indian homes.
+              {t("features.desc")}
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((f, i) => (
+            {featureKeys.map((f, i) => (
               <motion.div
-                key={f.title}
+                key={f.titleKey}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -131,8 +137,8 @@ const Index = () => {
                     <div className="w-12 h-12 rounded-lg bg-gradient-hero flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                       <f.icon className="w-6 h-6 text-primary-foreground" />
                     </div>
-                    <h3 className="font-display text-xl font-semibold mb-2 text-foreground">{f.title}</h3>
-                    <p className="text-muted-foreground text-sm">{f.desc}</p>
+                    <h3 className="font-display text-xl font-semibold mb-2 text-foreground">{t(f.titleKey)}</h3>
+                    <p className="text-muted-foreground text-sm">{t(f.descKey)}</p>
                   </div>
                 </Link>
               </motion.div>
@@ -146,14 +152,14 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <div className="bg-gradient-hero rounded-2xl p-12 text-center">
             <h2 className="font-display text-3xl lg:text-4xl font-bold text-primary-foreground mb-4">
-              Ready to Transform Your Space?
+              {t("cta.title")}
             </h2>
             <p className="text-primary-foreground/80 text-lg mb-8 max-w-xl mx-auto">
-              Start with a room scan or explore our curated AI theme packs designed for Indian homes.
+              {t("cta.desc")}
             </p>
             <Link to="/scanner">
               <Button size="lg" className="bg-card text-foreground hover:bg-card/90 text-base px-10 shadow-warm">
-                Start Designing Free
+                {t("cta.startDesigning")}
               </Button>
             </Link>
           </div>
@@ -163,7 +169,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="py-10 border-t border-border">
         <div className="container mx-auto px-6 text-center text-sm text-muted-foreground">
-          <p>© 2026 GruhaBuddy — AI Interior Design for Indian Homes</p>
+          <p>{t("footer.copyright")}</p>
           <p className="mt-1">English • हिन्दी • తెలుగు</p>
         </div>
       </footer>

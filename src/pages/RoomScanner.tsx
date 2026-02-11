@@ -6,10 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import { analyzeRoom } from "@/lib/design-ai";
+import { useI18n } from "@/lib/i18n";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
-const roomTypes = ["Bedroom", "Living Room", "Kitchen", "Office", "Bathroom", "Dining Room"];
+const roomTypeKeys = ["common.bedroom", "common.livingRoom", "common.kitchen", "common.office", "common.bathroom", "common.diningRoom"] as const;
+const roomTypeValues = ["Bedroom", "Living Room", "Kitchen", "Office", "Bathroom", "Dining Room"];
 
 const RoomScanner = () => {
+  const { t } = useI18n();
   const [mode, setMode] = useState<"upload" | "manual">("upload");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [selectedRoom, setSelectedRoom] = useState<string>("");
@@ -52,14 +56,17 @@ const RoomScanner = () => {
   return (
     <div className="min-h-screen bg-background">
       <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto flex items-center gap-4 py-4 px-6">
-          <Link to="/"><Button variant="ghost" size="icon"><ArrowLeft className="w-5 h-5" /></Button></Link>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-hero flex items-center justify-center">
-              <Camera className="w-4 h-4 text-primary-foreground" />
+        <div className="container mx-auto flex items-center justify-between py-4 px-6">
+          <div className="flex items-center gap-4">
+            <Link to="/"><Button variant="ghost" size="icon"><ArrowLeft className="w-5 h-5" /></Button></Link>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-hero flex items-center justify-center">
+                <Camera className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <span className="font-display text-lg font-bold">{t("scanner.title")}</span>
             </div>
-            <span className="font-display text-lg font-bold">AI Room Scanner</span>
           </div>
+          <LanguageSwitcher />
         </div>
       </nav>
 
@@ -70,14 +77,14 @@ const RoomScanner = () => {
             onClick={() => setMode("upload")}
             className={mode === "upload" ? "bg-gradient-hero text-primary-foreground border-0" : "border-primary text-primary"}
           >
-            <Upload className="w-4 h-4 mr-2" /> Upload Photo
+            <Upload className="w-4 h-4 mr-2" /> {t("scanner.uploadPhoto")}
           </Button>
           <Button
             variant={mode === "manual" ? "default" : "outline"}
             onClick={() => setMode("manual")}
             className={mode === "manual" ? "bg-gradient-hero text-primary-foreground border-0" : "border-primary text-primary"}
           >
-            <Ruler className="w-4 h-4 mr-2" /> Enter Dimensions
+            <Ruler className="w-4 h-4 mr-2" /> {t("scanner.enterDimensions")}
           </Button>
         </div>
 
@@ -94,7 +101,7 @@ const RoomScanner = () => {
                   <div className="w-16 h-16 mx-auto rounded-full bg-secondary flex items-center justify-center">
                     <Camera className="w-8 h-8 text-primary" />
                   </div>
-                  <p className="text-lg font-medium text-foreground">Click to upload room photo</p>
+                  <p className="text-lg font-medium text-foreground">{t("scanner.clickUpload")}</p>
                   <p className="text-sm text-muted-foreground">JPG, PNG up to 10MB</p>
                 </div>
               )}
@@ -103,15 +110,15 @@ const RoomScanner = () => {
 
             {uploadedImage && (
               <div className="space-y-3">
-                <Label className="text-sm text-muted-foreground block">Room Type (helps AI accuracy)</Label>
+                <Label className="text-sm text-muted-foreground block">{t("scanner.roomType")}</Label>
                 <div className="flex flex-wrap gap-2">
-                  {roomTypes.map(r => (
+                  {roomTypeKeys.map((key, i) => (
                     <Button
-                      key={r} size="sm"
-                      variant={selectedRoom === r ? "default" : "outline"}
-                      onClick={() => setSelectedRoom(r)}
-                      className={selectedRoom === r ? "bg-gradient-hero text-primary-foreground border-0" : "border-border text-foreground"}
-                    >{r}</Button>
+                      key={key} size="sm"
+                      variant={selectedRoom === roomTypeValues[i] ? "default" : "outline"}
+                      onClick={() => setSelectedRoom(roomTypeValues[i])}
+                      className={selectedRoom === roomTypeValues[i] ? "bg-gradient-hero text-primary-foreground border-0" : "border-border text-foreground"}
+                    >{t(key)}</Button>
                   ))}
                 </div>
               </div>
@@ -119,7 +126,7 @@ const RoomScanner = () => {
 
             {uploadedImage && !result && (
               <Button onClick={handleScan} size="lg" disabled={loading} className="w-full bg-gradient-hero text-primary-foreground border-0 shadow-warm">
-                {loading ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Analyzing with AI...</> : <><Sparkles className="w-5 h-5 mr-2" /> Scan Room with AI</>}
+                {loading ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> {t("scanner.analyzing")}</> : <><Sparkles className="w-5 h-5 mr-2" /> {t("scanner.scanWithAI")}</>}
               </Button>
             )}
           </div>
@@ -127,27 +134,27 @@ const RoomScanner = () => {
           <div className="space-y-6 bg-card rounded-2xl p-8 border border-border">
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <Label className="text-sm text-muted-foreground">Length (ft)</Label>
+                <Label className="text-sm text-muted-foreground">{t("scanner.lengthFt")}</Label>
                 <Input placeholder="12" value={dimensions.length} onChange={e => setDimensions(d => ({ ...d, length: e.target.value }))} className="mt-1" />
               </div>
               <div>
-                <Label className="text-sm text-muted-foreground">Width (ft)</Label>
+                <Label className="text-sm text-muted-foreground">{t("scanner.widthFt")}</Label>
                 <Input placeholder="10" value={dimensions.width} onChange={e => setDimensions(d => ({ ...d, width: e.target.value }))} className="mt-1" />
               </div>
               <div>
-                <Label className="text-sm text-muted-foreground">Height (ft)</Label>
+                <Label className="text-sm text-muted-foreground">{t("scanner.heightFt")}</Label>
                 <Input placeholder="9" value={dimensions.height} onChange={e => setDimensions(d => ({ ...d, height: e.target.value }))} className="mt-1" />
               </div>
             </div>
             <div>
-              <Label className="text-sm text-muted-foreground mb-2 block">Room Type</Label>
+              <Label className="text-sm text-muted-foreground mb-2 block">{t("scanner.roomTypeLabel")}</Label>
               <div className="flex flex-wrap gap-2">
-                {roomTypes.map(r => (
-                  <Button key={r} size="sm"
-                    variant={selectedRoom === r ? "default" : "outline"}
-                    onClick={() => setSelectedRoom(r)}
-                    className={selectedRoom === r ? "bg-gradient-hero text-primary-foreground border-0" : "border-border text-foreground"}
-                  >{r}</Button>
+                {roomTypeKeys.map((key, i) => (
+                  <Button key={key} size="sm"
+                    variant={selectedRoom === roomTypeValues[i] ? "default" : "outline"}
+                    onClick={() => setSelectedRoom(roomTypeValues[i])}
+                    className={selectedRoom === roomTypeValues[i] ? "bg-gradient-hero text-primary-foreground border-0" : "border-border text-foreground"}
+                  >{t(key)}</Button>
                 ))}
               </div>
             </div>
@@ -156,7 +163,7 @@ const RoomScanner = () => {
               className="w-full bg-gradient-hero text-primary-foreground border-0 shadow-warm"
               disabled={loading || !dimensions.length || !dimensions.width || !selectedRoom}
             >
-              {loading ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> AI is analyzing...</> : "Generate AI Room Analysis"}
+              {loading ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> {t("scanner.aiAnalyzing")}</> : t("scanner.generateAnalysis")}
             </Button>
           </div>
         )}
@@ -165,14 +172,13 @@ const RoomScanner = () => {
         {result && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8 space-y-6">
             <h2 className="font-display text-2xl font-bold text-foreground flex items-center gap-2">
-              <CheckCircle className="w-6 h-6 text-sage" /> AI Room Analysis Complete
+              <CheckCircle className="w-6 h-6 text-sage" /> {t("scanner.analysisComplete")}
             </h2>
 
-            {/* Room Metadata */}
             {analysis && (
               <div className="grid md:grid-cols-3 gap-4">
                 {[
-                  { label: "Room Type", value: analysis.roomType },
+                  { label: t("scanner.roomTypeLabel"), value: analysis.roomType },
                   { label: "Area", value: analysis.area ? `${analysis.area} sq ft` : `${Number(dimensions.length || 12) * Number(dimensions.width || 10)} sq ft` },
                   { label: "Natural Light", value: analysis.naturalLight },
                   { label: "Ventilation", value: analysis.ventilation },
@@ -187,18 +193,16 @@ const RoomScanner = () => {
               </div>
             )}
 
-            {/* Design Score */}
             {result.designScore && (
               <div className="bg-card rounded-xl p-6 border-2 border-primary shadow-warm text-center">
-                <p className="text-sm text-muted-foreground mb-1">AI Design Score</p>
+                <p className="text-sm text-muted-foreground mb-1">{t("scanner.aiDesignScore")}</p>
                 <p className="text-4xl font-display font-bold text-gradient-hero">{result.designScore}/100</p>
               </div>
             )}
 
-            {/* Color Recommendations */}
             {result.colorRecommendations?.length > 0 && (
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h3 className="font-display text-lg font-semibold mb-4 text-foreground">🎨 Recommended Colors</h3>
+                <h3 className="font-display text-lg font-semibold mb-4 text-foreground">{t("scanner.recommendedColors")}</h3>
                 <div className="grid md:grid-cols-2 gap-3">
                   {result.colorRecommendations.map((c: any, i: number) => (
                     <div key={i} className="flex items-center gap-3 bg-background rounded-lg p-3 border border-border">
@@ -213,10 +217,9 @@ const RoomScanner = () => {
               </div>
             )}
 
-            {/* Furniture */}
             {result.furnitureRecommendations?.length > 0 && (
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h3 className="font-display text-lg font-semibold mb-4 text-foreground">🛋️ Furniture Recommendations</h3>
+                <h3 className="font-display text-lg font-semibold mb-4 text-foreground">{t("scanner.furnitureRec")}</h3>
                 <div className="space-y-3">
                   {result.furnitureRecommendations.map((f: any, i: number) => (
                     <div key={i} className="bg-background rounded-lg p-4 border border-border">
@@ -234,10 +237,9 @@ const RoomScanner = () => {
               </div>
             )}
 
-            {/* Space Optimization */}
             {result.spaceOptimization?.length > 0 && (
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h3 className="font-display text-lg font-semibold mb-3 text-foreground">📐 Space Optimization</h3>
+                <h3 className="font-display text-lg font-semibold mb-3 text-foreground">{t("scanner.spaceOpt")}</h3>
                 <ul className="space-y-2">
                   {result.spaceOptimization.map((tip: string, i: number) => (
                     <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
@@ -248,10 +250,9 @@ const RoomScanner = () => {
               </div>
             )}
 
-            {/* Vastu Tips */}
             {result.vastuTips?.length > 0 && (
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h3 className="font-display text-lg font-semibold mb-3 text-foreground">🕉️ Vastu Suggestions</h3>
+                <h3 className="font-display text-lg font-semibold mb-3 text-foreground">{t("scanner.vastuSuggestions")}</h3>
                 <ul className="space-y-2">
                   {result.vastuTips.map((tip: string, i: number) => (
                     <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
@@ -262,10 +263,9 @@ const RoomScanner = () => {
               </div>
             )}
 
-            {/* Budget */}
             {result.estimatedBudget && (
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h3 className="font-display text-lg font-semibold mb-3 text-foreground">💰 Budget Estimate</h3>
+                <h3 className="font-display text-lg font-semibold mb-3 text-foreground">{t("scanner.budgetEstimate")}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {Object.entries(result.estimatedBudget).map(([key, val]) => (
                     <div key={key} className={`bg-background rounded-lg p-3 border ${key === "total" ? "border-primary col-span-2 md:col-span-3" : "border-border"}`}>
@@ -277,10 +277,9 @@ const RoomScanner = () => {
               </div>
             )}
 
-            {/* Lighting */}
             {result.lightingSuggestions?.length > 0 && (
               <div className="bg-card rounded-xl p-6 border border-border">
-                <h3 className="font-display text-lg font-semibold mb-3 text-foreground">💡 Lighting Suggestions</h3>
+                <h3 className="font-display text-lg font-semibold mb-3 text-foreground">{t("scanner.lightingSugg")}</h3>
                 <div className="space-y-2">
                   {result.lightingSuggestions.map((l: any, i: number) => (
                     <div key={i} className="bg-background rounded-lg p-3 border border-border">
@@ -293,9 +292,9 @@ const RoomScanner = () => {
             )}
 
             <div className="flex gap-3 flex-wrap">
-              <Link to="/colors"><Button className="bg-gradient-hero text-primary-foreground border-0">Paint Simulator →</Button></Link>
-              <Link to="/themes"><Button variant="outline" className="border-primary text-primary">Apply Theme Pack →</Button></Link>
-              <Link to="/budget"><Button variant="outline" className="border-primary text-primary">Detailed Budget →</Button></Link>
+              <Link to="/colors"><Button className="bg-gradient-hero text-primary-foreground border-0">{t("scanner.paintSim")}</Button></Link>
+              <Link to="/themes"><Button variant="outline" className="border-primary text-primary">{t("scanner.applyTheme")}</Button></Link>
+              <Link to="/budget"><Button variant="outline" className="border-primary text-primary">{t("scanner.detailedBudget")}</Button></Link>
             </div>
           </motion.div>
         )}
