@@ -6,23 +6,25 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 import { streamChat } from "@/lib/chat-stream";
 import { toast } from "sonner";
+import { useI18n } from "@/lib/i18n";
 
 type Message = { role: "user" | "assistant"; content: string };
 
-const SUGGESTIONS = [
-  "Best colors for a small bedroom?",
-  "Budget-friendly living room ideas",
-  "Vastu tips for kitchen placement",
-  "How to make a 10x12 room look bigger?",
-];
-
 export default function ChatBot() {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const suggestions = [
+    t("chat.suggestion1"),
+    t("chat.suggestion2"),
+    t("chat.suggestion3"),
+    t("chat.suggestion4"),
+  ];
 
   useEffect(() => {
     if (open && inputRef.current) inputRef.current.focus();
@@ -73,7 +75,6 @@ export default function ChatBot() {
 
   return (
     <>
-      {/* Floating button */}
       <AnimatePresence>
         {!open && (
           <motion.div
@@ -93,7 +94,6 @@ export default function ChatBot() {
         )}
       </AnimatePresence>
 
-      {/* Chat panel */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -103,7 +103,6 @@ export default function ChatBot() {
             transition={{ duration: 0.2 }}
             className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[calc(100vh-4rem)] flex flex-col rounded-2xl border border-border bg-background shadow-warm overflow-hidden"
           >
-            {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 bg-gradient-hero text-primary-foreground">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5" />
@@ -119,15 +118,14 @@ export default function ChatBot() {
               </Button>
             </div>
 
-            {/* Messages */}
             <ScrollArea className="flex-1 px-4 py-3" ref={scrollRef}>
               {messages.length === 0 && (
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground text-center">
-                    👋 Hi! I'm GruhaBuddy, your AI interior design assistant. Ask me anything about home design!
+                    {t("chat.greeting")}
                   </p>
                   <div className="grid grid-cols-1 gap-2">
-                    {SUGGESTIONS.map((s) => (
+                    {suggestions.map((s) => (
                       <button
                         key={s}
                         onClick={() => send(s)}
@@ -173,7 +171,6 @@ export default function ChatBot() {
               </div>
             </ScrollArea>
 
-            {/* Input */}
             <div className="p-3 border-t border-border">
               <form
                 onSubmit={(e) => {
@@ -186,7 +183,7 @@ export default function ChatBot() {
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about interior design..."
+                  placeholder={t("chat.placeholder")}
                   disabled={isLoading}
                   className="flex-1 h-10 rounded-full border border-input bg-background px-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                 />
