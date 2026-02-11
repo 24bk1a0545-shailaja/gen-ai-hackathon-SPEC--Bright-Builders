@@ -10,6 +10,7 @@ import ThemePacks from "./pages/ThemePacks";
 import BudgetEstimator from "./pages/BudgetEstimator";
 import RoomDesigner from "./pages/RoomDesigner";
 import NotFound from "./pages/NotFound";
+import ChatBot from "./components/ChatBot";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/designer" element={<RoomDesigner />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <ChatBot />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
