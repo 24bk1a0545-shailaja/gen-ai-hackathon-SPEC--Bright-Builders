@@ -1,73 +1,95 @@
-# Welcome to your Lovable project
+How the Project Works (High Level)
 
-## Project info
+User uploads a room image (empty or already furnished)
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+User describes preferences (style, budget, purpose, Vastu rules)
 
-## How can I edit this code?
+AI analyzes:
 
-There are several ways of editing your application.
+Room type & layout
 
-**Use Lovable**
+Empty space or existing design
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+User intent
 
-Changes made via Lovable will be committed automatically to this repo.
+AI generates:
 
-**Use your preferred IDE**
+Design suggestions
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Layout ideas
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Style recommendations
 
-Follow these steps:
+Visual redesign concepts
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Core Capabilities
+1. Design from Empty Space
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+User uploads an empty room
 
-# Step 3: Install the necessary dependencies.
-npm i
+AI suggests:
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+Furniture placement
 
-**Edit a file directly in GitHub**
+Color palettes
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Lighting ideas
 
-**Use GitHub Codespaces**
+Space optimization
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+2. Redesign Existing Rooms
 
-## What technologies are used for this project?
+User uploads a furnished room
 
-This project is built with:
+AI transforms it into:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+A new style (modern, minimal, traditional, luxury, etc.)
 
-## How can I deploy this project?
+Better layout without structural changes
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+3. AI Interior Design Agent
 
-## Can I connect a custom domain to my Lovable project?
+Conversational assistant that:
 
-Yes, you can!
+Understands design intent
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Explains why a design works
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Iteratively refines results based on feedback
+
+4. Indian-Focused Intelligence
+
+Considers:
+
+Small room sizes
+
+Multi-purpose spaces
+
+Vastu compliance (direction, placement)
+
+Budget-friendly design choices
+
+Technical Overview (Brief & Clean)
+
+Frontend: React + TypeScript + Tailwind + shadcn/ui
+→ Interactive UI for image upload, chat, and design display
+
+Backend: Deno Edge Functions (Lovable Cloud)
+→ Processes AI prompts, room analysis, and responses
+
+AI Layer: Lovable AI Gateway
+→ Handles language and image understanding
+
+Database: PostgreSQL (future-ready)
+→ Will store user preferences and saved designs
+
+Why GruhaBuddy Is Unique
+
+Combines image understanding + conversational AI
+
+Works for both empty and already designed rooms
+
+Focused on Indian households, not generic layouts
+
+Fast, scalable, and serverless using edge computing
+
