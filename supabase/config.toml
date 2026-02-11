@@ -2,3 +2,6 @@ project_id = "rgkadgogeqrlscvbjtqd"
 
 [functions.room-design-ai]
 verify_jwt = false
+
+[functions.gruha-chat]
+verify_jwt = false
